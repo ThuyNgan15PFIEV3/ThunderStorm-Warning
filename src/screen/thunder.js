@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,11 +13,15 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function Thunder() {
+  const backgroundColorThunder = ['#EE2A7B', '#9E1F63'];
+  const backgroundColorCloudy = ['#8DC63F', '#009444'];
+
   const [currentDay, setCurrentDay] = useState(new Date());
   const [temperature, setTemperature] = useState('21 độ C');
-  const [status, setStatus] = useState('Cloud');
+  const [status, setStatus] = useState(temperature === '21 độ C' ?'Thunder':'Cloudy');
   const [location, setLocation] = useState('Surakarta, INA');
-  const [backgroundColor, setBackgroundColor] = useState(status === 'Thunder' ? [ '#EE2A7B', '#9E1F63'] : [ '#8DC63F', '#009444']);
+  const [backgroundColor, setBackgroundColor] = useState(backgroundColorThunder
+  );
 
   const days = [
     'Sunday',
@@ -30,6 +34,10 @@ export default function Thunder() {
   ];
   const day = days[currentDay.getDay()];
 
+  useEffect(() => {
+    if (status === 'Thunder') setBackgroundColor(backgroundColorThunder);
+    if (status === 'Cloudy') setBackgroundColor(backgroundColorCloudy);
+  }, [status]);
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -57,7 +65,20 @@ export default function Thunder() {
           />
         )}
         <View style={styles.containerWeather}>
-          <Text style={styles.temp}>{temperature}</Text>
+          <Text
+            style={styles.temp}
+            onPress={() => {
+              if (temperature === '21 độ C') {
+                setTemperature('16 độ C');
+                setStatus('Cloudy');
+              }
+              if (temperature === '16 độ C') {
+                setTemperature('21 độ C');
+                setStatus('Thunder');
+              }
+            }}>
+            {temperature}
+          </Text>
           <View
             style={{
               borderStartWidth: 2,
